@@ -2,13 +2,13 @@ version: "3"
 
 services:
   app:
-    image: ddtq/saude-app:0.1
+    image: ddtq/saude_app:0.1
     volumes:
       - ".:/var/www/html"
     depends_on:
       - db
   web:
-    image: ddtq/saude-web:0.1
+    image: ddtq/saude_web:0.1
     ports:
       - "8080:80"
     depends_on:

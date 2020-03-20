@@ -13,6 +13,6 @@ RUN apk add \
   openntpd;
 RUN sed -i "s/#LoadModule\ rewrite_module/LoadModule\ rewrite_module/" /usr/local/apache2/conf/httpd.conf;
 # Copy apache vhost file to proxy php requests to php-fpm container
-COPY sia.vhost.conf /usr/local/apache2/conf/sia.vhost.conf
-RUN echo "Include /usr/local/apache2/conf/sia.vhost.conf" \
+COPY saude.vhost.conf /usr/local/apache2/conf/saude.vhost.conf
+RUN echo "Include /usr/local/apache2/conf/saude.vhost.conf" \
     >> /usr/local/apache2/conf/httpd.conf
