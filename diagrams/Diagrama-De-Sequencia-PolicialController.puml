@@ -1,0 +1,69 @@
+@startuml
+
+title "Diagrama de Sequencia /policial"
+
+actor webapp
+control "Policial Controller" as PMC
+entity PolicialHelper as PMH
+entity EntityManager as em
+entity PolicialMeta4 as PM4
+entity Policial as PM
+database Widgets
+
+webapp -> PMC: GET /policial
+activate PMC
+PMC -> PMH: findPM(String rg, Datetime data_nascimento)
+activate PMH
+PMH -> em: find(String entityName, String rg)
+activate em
+
+alt successful case
+    PMH <-- em: Policial
+    deactivate em
+    PMH -> PMH: verificarDataNascimento(Datetime dt)
+    alt successful case
+        PMC <-- PMH: Policial
+        PMC -> PMC: sendTrue()
+        webapp <-- PMC: Response
+    else Dt Nasc diferente
+        PMC <-- PMH: Null
+        PMC -> PMC: sendNotFound()
+        webapp <-- PMC: Response
+    end
+    
+else Ainda não é cadastrado
+    PMH <-- em: Null
+    PMH -> PM4: find(String rg)
+    activate PM4
+    
+    alt successful case
+        PMH <-- PM4: PolicialMeta4
+        PMH -> PM: new()
+        activate PM
+        PMH -> em: persist(Policial policial)
+        PMH -> em: flush()
+
+        PMH -> PMH: verificarDataNascimento(Datetime dt)
+
+        alt successful case
+            PMC <-- PMH: Policial
+            PMC -> PMC: sendTrue()
+            webapp <-- PMC: Response
+        else Dt Nasc diferente
+            PMC <-- PMH: Null
+            PMC -> PMC: sendNotFound()
+            webapp <-- PMC: Response
+        end
+
+    else Não existe
+        PMH <-- PM4: Null
+        deactivate PM4
+        PMC <-- PMH: Null
+        deactivate PMH
+        PMC -> PMC: sendNotFound()
+        webapp <-- PMC: Response
+    end
+end
+deactivate PMC
+
+@enduml

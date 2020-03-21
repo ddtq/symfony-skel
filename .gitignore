@@ -80,3 +80,5 @@ composer.phar
 .history
 
 # End of https://www.gitignore.io/api/symfony,composer,visualstudiocode
+
+/diagrams/out/*
